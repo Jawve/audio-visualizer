@@ -1,0 +1,33 @@
+# Build artifacts
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.csproj.user
+*.vbproj.user
+
+# Dotnet user files
+*.lock.json
+project.lock.json
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Logs
+*.log
+
+# Others
+*.dbmdl
+*.bak
+*.tmp
+*.swp
+*.DS_Store
+Thumbs.db

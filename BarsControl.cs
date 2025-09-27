@@ -20,11 +20,15 @@ namespace test
         private float _phase;
 
         // Appearance
-        public Color BarColor { get; set; } = Color.FromArgb(215, 128, 58, 180); // solid purple-ish
         /// <summary>Lower = thicker bars (0..1). Ex: 0.20 = 80% of slot width.</summary>
-        public double BarSpacing { get; set; } = 0.20; // thicker default
+        public double BarSpacing { get; set; } = 0.18; // thicker default
         /// <summary>Scales maximum bar height (0..1). 0.95 ≈ top of content area.</summary>
         public double HeightScale { get; set; } = 0.95;
+
+        // Gradient colors (bottom -> top). Semi-transparent by default for a clear/glassy look.
+        public Color GradientBottom { get; set; } = Color.FromArgb(190, 90, 24, 140);   // deep purple
+        public Color GradientMid { get; set; } = Color.FromArgb(170, 250, 210, 70);  // warm yellow
+        public Color GradientTop { get; set; } = Color.FromArgb(160, 255, 140, 20);  // orange
 
         // XAML parameterless ctor
         public BarsControl() : this(48, 0.65f) { }
@@ -67,6 +71,8 @@ namespace test
             base.OnRender(dc);
             double w = ActualWidth, h = ActualHeight; if (w <= 0 || h <= 0) return;
 
+            // No backdrop: this surface is transparent by default; host can place it over anything.
+            // Provide small padding so tall bars don't clip.
             double xpad = Math.Max(6, 0.01 * w);
             double ypad = Math.Max(6, 0.05 * h);
             double contentH = Math.Max(6, h - 2 * ypad);
@@ -76,8 +82,6 @@ namespace test
             double slot = (w - 2 * xpad) / Math.Max(1, _barCount);
             double bw = slot * (1.0 - Math.Clamp(BarSpacing, 0.0, 0.95));
             if (bw < 1) bw = 1;
-
-            var brush = new SolidColorBrush(BarColor);
 
             if (_mode == RenderMode.Idle)
             {
@@ -89,7 +93,7 @@ namespace test
                     double v = 0.25 + 0.75 * (0.5 + 0.5 * Math.Sin(_phase + i * k));
                     double hbar = Math.Max(1, v * full);
                     var rect = new Rect(x0, baseY - hbar, bw, hbar);
-                    dc.DrawRectangle(brush, null, rect);
+                    dc.DrawRectangle(BuildBrushForRect(rect), null, rect);
                 }
                 return;
             }
@@ -103,8 +107,23 @@ namespace test
                 double x0 = xpad + i * slot + (slot - bw) / 2.0;
                 double hbar = Math.Max(1, v * usableH);
                 var rect = new Rect(x0, baseY - hbar, bw, hbar);
-                dc.DrawRectangle(brush, null, rect);
+                dc.DrawRectangle(BuildBrushForRect(rect), null, rect);
             }
+        }
+
+        private Brush BuildBrushForRect(Rect r)
+        {
+            // Vertical gradient: bottom (purple) -> mid (yellow) -> top (orange)
+            var lg = new LinearGradientBrush
+            {
+                MappingMode = BrushMappingMode.Absolute,
+                StartPoint = new Point(0, r.Bottom),
+                EndPoint = new Point(0, r.Top)
+            };
+            lg.GradientStops.Add(new GradientStop(GradientBottom, 0.00));
+            lg.GradientStops.Add(new GradientStop(GradientMid, 0.55));
+            lg.GradientStops.Add(new GradientStop(GradientTop, 0.95));
+            return lg;
         }
     }
 }

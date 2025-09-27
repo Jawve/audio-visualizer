@@ -1,0 +1,28 @@
+<UserControl x:Class="test.SandboxControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+        <!-- Boxed scrollable/zoomable workspace -->
+        <ScrollViewer x:Name="Scroller"
+                        CanContentScroll="False"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Background="Transparent">
+                <Grid>
+                        <!-- A fixed-size workspace; we zoom the inner Canvas via LayoutTransform -->
+                        <Grid x:Name="ZoomHost">
+                                <Grid.LayoutTransform>
+                                        <ScaleTransform x:Name="Zoom"
+                                                        ScaleX="1"
+                                                        ScaleY="1"/>
+                                </Grid.LayoutTransform>
+                                <Canvas x:Name="Space"
+                                                Width="1600"
+                                                Height="900"
+                                        Background="#00000000"
+                                                ClipToBounds="True"
+                                                Focusable="True"/>
+                        </Grid>
+                </Grid>
+        </ScrollViewer>
+</UserControl>

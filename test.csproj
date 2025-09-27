@@ -5,7 +5,15 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDefaultPageItems>true</EnableDefaultPageItems>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- In case these still exist on disk, keep them out -->
+    <Page Remove="PopoutWindow.xaml" />
+    <Compile Remove="PopoutWindow.xaml.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
